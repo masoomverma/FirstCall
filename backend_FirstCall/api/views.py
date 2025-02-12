@@ -1,3 +1,4 @@
+import requests
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Item
@@ -26,3 +27,14 @@ def ambulance_status(request):
 def medical_tools(request):
     tools = MedicalTool.objects.all().values()
     return JsonResponse(list(tools), safe=False)
+
+@api_view(['GET'])
+def fetch_real_data(request):
+    url = "https://api.example.com/hospitals"  # Replace with actual API URL
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise error if API request fails
+        data = response.json()
+        return Response(data)
+    except requests.RequestException as e:
+        return Response({"error": str(e)}, status=500)
